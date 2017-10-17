@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "774384103288",
+    "firebase_url": "https://adabala-d34bc.firebaseio.com",
+    "project_id": "adabala-d34bc",
+    "storage_bucket": "adabala-d34bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774384103288:android:23b5893ed971dec9",
+        "android_client_info": {
+          "package_name": "com.adabala.firechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774384103288-skksjjbcohomvo3sngcdiin7ersftrnc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adabala.firechat",
+            "certificate_hash": "33feb6b9b94645a8b97d72f2677e2f058c6c5fb4"
+          }
+        },
+        {
+          "client_id": "774384103288-a0jbqv9v69bs3plog48gij3ep2ejghir.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJdm71qwoODHp5KR_9D8H9tJVMwzf9R9Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774384103288-a0jbqv9v69bs3plog48gij3ep2ejghir.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

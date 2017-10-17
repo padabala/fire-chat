@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">FireChat</string>
+    <string name="welcome_screen_text">Welcome \n to \n Group Chat. \n\n\n Please register to enjoy group chat with friends.</string>
+    <string name="get_started_text">Get Started</string>
+    <string name="number_input_hint">Enter your phone number</string>
+    <string name="code_input_hint">Enter your verification code</string>
+    <string name="register_text">Register</string>
+    <string name="verify_text">Verify</string>
+    <string name="permission_req_text">Application needs contacts read permission to chat with friends</string>
+    <string name="registration_failed_text">Registration Failed!</string>
+</resources>

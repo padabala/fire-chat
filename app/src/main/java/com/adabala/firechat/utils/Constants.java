@@ -1,10 +1,16 @@
 package com.adabala.firechat.utils;
 
+
+import android.Manifest;
+
 /**
  * Created by adabala on 17/10/2017.
  */
 
 public class Constants {
+
+    public static final String[] REQUIRED_PERMISSIONS = new String [] {Manifest.permission.READ_CONTACTS};
+    public static final int PERMISSION_REQUEST_CODE = 10001;
 
     public class SharedPrefs {
         public static final String SHARED_PREFS_KEY = "groupChat";

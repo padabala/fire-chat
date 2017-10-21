@@ -3,7 +3,7 @@ package com.adabala.firechat.di;
 import android.app.Application;
 import android.content.Context;
 
-import com.adabala.firechat.GroupChatApplication;
+import com.adabala.firechat.FireChatApplication;
 import com.adabala.firechat.database.ApplicationAccess;
 import com.adabala.firechat.utils.Constants;
 import com.github.pwittchen.prefser.library.rx2.Prefser;
@@ -22,9 +22,9 @@ import dagger.Provides;
 @Module
 public class AppModule {
 
-    private GroupChatApplication application;
+    private FireChatApplication application;
 
-    public AppModule(GroupChatApplication application) {
+    public AppModule(FireChatApplication application) {
         this.application = application;
     }
 

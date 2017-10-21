@@ -2,7 +2,7 @@ package com.adabala.firechat.di;
 
 import com.adabala.firechat.RegistrationActivity;
 import com.adabala.firechat.WelcomeActivity;
-import com.adabala.firechat.firebase.GroupChatInstanceIdService;
+import com.adabala.firechat.firebase.FCFirebaseInstanceIdService;
 
 import dagger.Component;
 
@@ -14,5 +14,5 @@ import dagger.Component;
 public interface AppComponent {
     void inject(WelcomeActivity welcomeActivity);
     void inject(RegistrationActivity registrationActivity);
-    void inject(GroupChatInstanceIdService groupChatInstanceIdService);
+    void inject(FCFirebaseInstanceIdService groupChatInstanceIdService);
 }

@@ -1,4 +1,4 @@
-package com.adabala.firechat.data;
+package com.adabala.firechat.chat;
 
 /**
  * Created by adabala on 17/10/2017.
@@ -9,7 +9,7 @@ public class ChatMessage {
     private String message;
     private String timeStamp;
     private String senderId;
-    private String chatId;
+    private String chatSessionId;
 
     public ChatMessage() {
 
@@ -43,11 +43,11 @@ public class ChatMessage {
         this.senderId = senderId;
     }
 
-    public String getChatId() {
-        return chatId;
+    public String getChatSessionId() {
+        return chatSessionId;
     }
 
-    public void setChatId(String chatId) {
-        this.chatId = chatId;
+    public void setChatSessionId(String chatSessionId) {
+        this.chatSessionId = chatSessionId;
     }
 }

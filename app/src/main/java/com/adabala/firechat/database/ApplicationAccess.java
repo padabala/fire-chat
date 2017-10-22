@@ -3,15 +3,21 @@ package com.adabala.firechat.database;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.adabala.firechat.data.Contact;
 import com.adabala.firechat.interfaces.RegistrationCompletionListener;
+import com.adabala.firechat.utils.Constants;
 import com.github.pwittchen.prefser.library.rx2.Prefser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 import static com.adabala.firechat.utils.Constants.Firebase.CHAT_REF;
@@ -31,7 +37,9 @@ public class ApplicationAccess {
     private Prefser prefser;
 
     private DatabaseReference userReference;
-    private DatabaseReference chatReference;
+    public DatabaseReference chatReference;
+
+    public BehaviorSubject<HashMap<String, ArrayList<Contact>>> contactsSubject;
 
     public ApplicationAccess(Context context, FirebaseDatabase firebaseDatabase, Prefser prefser) {
         this.context = context;
@@ -40,6 +48,8 @@ public class ApplicationAccess {
 
         this.userReference = firebaseDatabase.getReference(USERS_REF);
         this.chatReference = firebaseDatabase.getReference(CHAT_REF);
+
+        contactsSubject = BehaviorSubject.create();
     }
 
     public void saveVerifiedPhoneNumber(@NonNull String phoneNumber) {
@@ -97,5 +107,35 @@ public class ApplicationAccess {
                 removeVerifiedPhoneNumber();
             }
         });
+    }
+
+    public void syncContacts(ArrayList<Contact> phoneBookContacts) {
+        HashMap<String, ArrayList<Contact>> hashMap = new HashMap<>();
+        final ArrayList<Contact> friends = new ArrayList<>();
+        final ArrayList<Contact> invites = new ArrayList<>();
+
+        for(final Contact contact : phoneBookContacts) {
+            userReference.child(contact.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot != null) {
+                        contact.setFriend(true);
+                        friends.add(contact);
+                    } else {
+                        invites.add(contact);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        hashMap.put(Constants.ContactStatus.FRIENDS, friends);
+        hashMap.put(Constants.ContactStatus.INVITES, invites);
+
+        contactsSubject.onNext(hashMap);
     }
 }

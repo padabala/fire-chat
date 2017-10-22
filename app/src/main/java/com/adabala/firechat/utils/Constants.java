@@ -25,4 +25,9 @@ public class Constants {
         public static final String PHONE_NUMBER = "phoneNumber";
         public static final String FCM_TOKEN = "fcmToken";
     }
+
+    public class ContactStatus {
+        public static final String FRIENDS = "friends";
+        public static final String INVITES = "invites";
+    }
 }

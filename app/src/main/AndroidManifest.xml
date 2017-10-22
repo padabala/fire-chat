@@ -35,6 +35,8 @@
 
         <activity android:name=".AccessActivity" />
         <activity android:name=".contacts.ContactsActivity"></activity>
+        <activity android:name=".utils.ContactsSyncActivity"></activity>
+        <activity android:name=".chat.ChatActivity"></activity>
     </application>
 
 </manifest>

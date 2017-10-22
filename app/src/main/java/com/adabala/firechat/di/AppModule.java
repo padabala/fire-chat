@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.adabala.firechat.FireChatApplication;
+import com.adabala.firechat.chat.MessageTransportSignal;
 import com.adabala.firechat.database.ApplicationAccess;
 import com.adabala.firechat.utils.Constants;
 import com.github.pwittchen.prefser.library.rx2.Prefser;
@@ -35,7 +36,7 @@ public class AppModule {
 
     @Provides
     @Inject
-    Context provideApplicationContext(Application application) {
+    Context providesApplicationContext(Application application) {
         return application.getApplicationContext();
     }
 
@@ -47,19 +48,25 @@ public class AppModule {
 
     @Provides
     @Inject
-    FirebaseAuth provideFirebaseAuth() {
+    FirebaseAuth providesFirebaseAuth() {
         return FirebaseAuth.getInstance();
     }
 
     @Provides
     @Inject
-    FirebaseDatabase provideFirebaseDatabase() {
+    FirebaseDatabase providesFirebaseDatabase() {
         return FirebaseDatabase.getInstance();
     }
 
     @Provides
     @Inject
-    ApplicationAccess provideApplicationAccess(Context context, FirebaseDatabase firebaseDatabase, Prefser prefser) {
+    ApplicationAccess providesApplicationAccess(Context context, FirebaseDatabase firebaseDatabase, Prefser prefser) {
         return new ApplicationAccess(context, firebaseDatabase, prefser);
+    }
+
+    @Provides
+    @Inject
+    MessageTransportSignal providesMessageTransportSignal(ApplicationAccess applicationAccess) {
+        return new MessageTransportSignal(applicationAccess);
     }
 }

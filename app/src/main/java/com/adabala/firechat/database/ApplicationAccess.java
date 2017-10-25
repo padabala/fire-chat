@@ -20,6 +20,7 @@ import java.util.Map;
 import io.reactivex.subjects.BehaviorSubject;
 import timber.log.Timber;
 
+import static com.adabala.firechat.utils.Constants.Firebase.CHAT_HEADS;
 import static com.adabala.firechat.utils.Constants.Firebase.CHAT_REF;
 import static com.adabala.firechat.utils.Constants.Firebase.FCM_TOKEN;
 import static com.adabala.firechat.utils.Constants.Firebase.USERS_REF;
@@ -40,6 +41,10 @@ public class ApplicationAccess {
     public DatabaseReference chatReference;
 
     public BehaviorSubject<HashMap<String, ArrayList<Contact>>> contactsSubject;
+
+    HashMap<String, ArrayList<Contact>> hashMap = new HashMap<>();
+    private ArrayList<Contact> friends = new ArrayList<>();
+    private ArrayList<Contact> invitees = new ArrayList<>();
 
     public ApplicationAccess(Context context, FirebaseDatabase firebaseDatabase, Prefser prefser) {
         this.context = context;
@@ -110,32 +115,50 @@ public class ApplicationAccess {
     }
 
     public void syncContacts(ArrayList<Contact> phoneBookContacts) {
-        HashMap<String, ArrayList<Contact>> hashMap = new HashMap<>();
-        final ArrayList<Contact> friends = new ArrayList<>();
-        final ArrayList<Contact> invites = new ArrayList<>();
 
         for(final Contact contact : phoneBookContacts) {
             userReference.child(contact.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(dataSnapshot != null) {
+                    if(dataSnapshot != null && dataSnapshot.getValue() != null) {
+                        invitees.remove(contact);
                         contact.setFriend(true);
                         friends.add(contact);
                     } else {
-                        invites.add(contact);
+                        friends.remove(contact);
+                        contact.setFriend(false);
+                        invitees.add(contact);
                     }
+                    hashMap.put(Constants.ContactStatus.FRIENDS, friends);
+                    hashMap.put(Constants.ContactStatus.INVITES, invitees);
+
+                    contactsSubject.onNext(hashMap);
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
+
             });
         }
+    }
 
-        hashMap.put(Constants.ContactStatus.FRIENDS, friends);
-        hashMap.put(Constants.ContactStatus.INVITES, invites);
+    public void getChatSessionForUser(final String recipientId) {
+        userReference.child(CHAT_HEADS).child(recipientId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot != null) {
+                    dataSnapshot.getValue();
+                } else {
+                    userReference.child(CHAT_HEADS).child(recipientId).push();
+                }
+            }
 
-        contactsSubject.onNext(hashMap);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

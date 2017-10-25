@@ -10,7 +10,10 @@ import com.adabala.firechat.R;
 import com.adabala.firechat.data.Contact;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 /**
@@ -19,16 +22,19 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 public class ContactsSection extends StatelessSection {
 
-    ArrayList<Contact> contacts;
-    String headerTitle;
+    private ArrayList<Contact> contacts;
+    private String headerTitle;
 
     private ContactSelectedListener contactSelectedListener;
 
     public ContactsSection(@LayoutRes int headerResourceId, @LayoutRes int itemResourceId, ArrayList<Contact> contacts, String headerTitle, ContactSelectedListener listener) {
-        super(headerResourceId, itemResourceId);
+        super(new SectionParameters.Builder(itemResourceId)
+                .headerResourceId(headerResourceId)
+                .build());
         this.contacts = contacts;
         this.headerTitle = headerTitle;
         this.contactSelectedListener = listener;
+        sortContacts();
     }
 
     public void updateContacts(ArrayList<Contact> contacts) {
@@ -38,12 +44,12 @@ public class ContactsSection extends StatelessSection {
 
     @Override
     public int getContentItemsTotal() {
-        return 0;
+        return this.contacts.size();
     }
 
     @Override
     public RecyclerView.ViewHolder getItemViewHolder(View view) {
-        return null;
+        return new ItemViewHolder(view);
     }
 
     @Override
@@ -63,7 +69,7 @@ public class ContactsSection extends StatelessSection {
 
     @Override
     public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-        return super.getHeaderViewHolder(view);
+        return new HeaderViewHolder(view);
     }
 
     @Override
@@ -89,10 +95,25 @@ public class ContactsSection extends StatelessSection {
     class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         private TextView headerTitle;
+        private LinearLayout headerLayout;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
             headerTitle = (TextView) itemView.findViewById(R.id.title);
+            headerLayout = (LinearLayout) itemView.findViewById(R.id.header_layout);
         }
+    }
+
+    private void sortContacts() {
+        Collections.sort(contacts, new Comparator<Contact>() {
+            @Override
+            public int compare(Contact contact1, Contact contact2) {
+                if (contact1.isFriend() == contact2.isFriend())
+                    return contact1.getName().compareTo(contact2.getName());
+                else {
+                    return contact1.isFriend() ? -1 : 1;
+                }
+            }
+        });
     }
 }

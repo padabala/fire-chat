@@ -67,16 +67,23 @@ public class ContactsSyncActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Timber.d("onCreateLoader");
+
+        String[] projection = { ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER };
+
         return new CursorLoader(ContactsSyncActivity.this,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " NOTNULL AND " + ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " > 0",
                 null,
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " NOTNULL AND " + ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + "=1",
-                null,
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Timber.d("onLoadFinished");
         if(data != null && data.getCount() > 0) {
             while(data.moveToNext()) {
                 try {

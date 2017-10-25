@@ -5,12 +5,14 @@ import com.adabala.firechat.WelcomeActivity;
 import com.adabala.firechat.contacts.ContactsActivity;
 import com.adabala.firechat.firebase.FCFirebaseInstanceIdService;
 
+import javax.inject.Singleton;
+
 import dagger.Component;
 
 /**
  * Created by adabala on 17/10/2017.
  */
-
+@Singleton
 @Component(modules = {AppModule.class})
 public interface AppComponent {
     void inject(WelcomeActivity welcomeActivity);

@@ -21,6 +21,7 @@ public class Constants {
     public class Firebase {
         public static final String USERS_REF = "users";
         public static final String CHAT_REF = "chats";
+        public static final String CHAT_HEADS = "chatHeads";
 
         public static final String PHONE_NUMBER = "phoneNumber";
         public static final String FCM_TOKEN = "fcmToken";

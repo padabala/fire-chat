@@ -3,6 +3,8 @@ package com.adabala.firechat.contacts;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.adabala.firechat.R;
 import com.adabala.firechat.data.Contact;
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.reactivex.functions.Consumer;
+import timber.log.Timber;
 
 public class ContactsActivity extends ContactsSyncActivity implements ContactSelectedListener{
 
@@ -40,25 +43,20 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
         mBinding = DataBindingUtil.setContentView(ContactsActivity.this, R.layout.activity_contacts);
         mBinding.setHandlers(ContactsActivity.this);
 
-        applicationAccess.contactsSubject.subscribe(new Consumer<HashMap<String, ArrayList<Contact>>>() {
-            @Override
-            public void accept(HashMap<String, ArrayList<Contact>> hashMap) throws Exception {
-                friendsSection.updateContacts(hashMap.get(Constants.ContactStatus.FRIENDS));
-                inviteSection.updateContacts(hashMap.get(Constants.ContactStatus.INVITES));
-                sectionedRecyclerViewAdapter.notifyDataSetChanged();
-            }
-        });
-
         friendsSection = new ContactsSection(R.layout.section_header, R.layout.contact_item, new ArrayList<Contact>()
-                , getString(R.string.friends_header_text), this);
+                , getString(R.string.friends_header_text), ContactsActivity.this);
         inviteSection = new ContactsSection(R.layout.section_header, R.layout.contact_item, new ArrayList<Contact>()
-                , getString(R.string.invite_header_text), this);
+                , getString(R.string.invite_header_text), ContactsActivity.this);
 
         sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
         sectionedRecyclerViewAdapter.addSection(friendsSection);
         sectionedRecyclerViewAdapter.addSection(inviteSection);
 
         mBinding.contactListView.setAdapter(sectionedRecyclerViewAdapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ContactsActivity.this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mBinding.contactListView.setLayoutManager(layoutManager);
 
         initContactsCursorLoader();
     }
@@ -70,5 +68,19 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
         } else {
             //TODO launch invitable intent
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        applicationAccess.contactsSubject.subscribe(new Consumer<HashMap<String, ArrayList<Contact>>>() {
+            @Override
+            public void accept(HashMap<String, ArrayList<Contact>> hashMap) throws Exception {
+                friendsSection.updateContacts(hashMap.get(Constants.ContactStatus.FRIENDS));
+                inviteSection.updateContacts(hashMap.get(Constants.ContactStatus.INVITES));
+                sectionedRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }

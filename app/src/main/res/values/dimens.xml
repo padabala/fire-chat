@@ -8,4 +8,7 @@
     <dimen name="button_text_padding">10dp</dimen>
 
     <dimen name="edit_text_margin">30dp</dimen>
+    <dimen name="contact_item_margin">10dp</dimen>
+    <dimen name="contact_text_size">20sp</dimen>
+    <dimen name="contact_number_size">16sp</dimen>
 </resources>

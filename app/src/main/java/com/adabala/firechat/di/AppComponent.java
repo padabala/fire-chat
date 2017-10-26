@@ -2,6 +2,7 @@ package com.adabala.firechat.di;
 
 import com.adabala.firechat.RegistrationActivity;
 import com.adabala.firechat.WelcomeActivity;
+import com.adabala.firechat.chat.ChatActivity;
 import com.adabala.firechat.contacts.ContactsActivity;
 import com.adabala.firechat.firebase.FCFirebaseInstanceIdService;
 
@@ -19,4 +20,5 @@ public interface AppComponent {
     void inject(RegistrationActivity registrationActivity);
     void inject(ContactsActivity contactsActivity);
     void inject(FCFirebaseInstanceIdService fcFirebaseInstanceIdService);
+    void inject(ChatActivity chatActivity);
 }

@@ -1,5 +1,6 @@
 package com.adabala.firechat.contacts;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.adabala.firechat.R;
+import com.adabala.firechat.chat.ChatActivity;
 import com.adabala.firechat.data.Contact;
 import com.adabala.firechat.database.ApplicationAccess;
 import com.adabala.firechat.databinding.ActivityContactsBinding;
@@ -64,7 +66,9 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
     @Override
     public void onContactsSelected(Contact contact) {
         if(contact.isFriend()) {
-            //TODO launch chat Activity
+            Intent intent = new Intent(ContactsActivity.this, ChatActivity.class);
+            intent.putExtra("recipientId", contact.getPhoneNumber());
+            startActivity(intent);
         } else {
             //TODO launch invitable intent
         }

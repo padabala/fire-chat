@@ -10,18 +10,16 @@ public class ChatMessage {
     private String timeStamp;
     private String senderId;
     private String receiverId;
-    private String messageId;
 
     public ChatMessage() {
 
     }
 
-    public ChatMessage(String message, String timeStamp, String senderId, String receiverId, String messageId) {
+    public ChatMessage(String message, String timeStamp, String senderId, String receiverId) {
         this.message = message;
         this.timeStamp = timeStamp;
         this.senderId = senderId;
         this.receiverId = receiverId;
-        this.messageId = messageId;
     }
 
     public String getMessage() {
@@ -46,14 +44,6 @@ public class ChatMessage {
 
     public void setSenderId(String senderId) {
         this.senderId = senderId;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
     }
 
     public String getReceiverId() {

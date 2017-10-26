@@ -3,6 +3,7 @@ package com.adabala.firechat.database;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.adabala.firechat.chat.ChatMessage;
 import com.adabala.firechat.data.Contact;
 import com.adabala.firechat.interfaces.RegistrationCompletionListener;
 import com.adabala.firechat.utils.Constants;
@@ -17,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -144,21 +148,37 @@ public class ApplicationAccess {
         }
     }
 
-    public void getChatSessionForUser(final String recipientId) {
-        userReference.child(CHAT_HEADS).child(recipientId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot != null) {
-                    dataSnapshot.getValue();
-                } else {
-                    userReference.child(CHAT_HEADS).child(recipientId).push();
-                }
-            }
+    public Single<String> getChatSessionForUser(final String recipientId) {
 
+        return Single.create(new SingleOnSubscribe<String>() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void subscribe(@io.reactivex.annotations.NonNull final SingleEmitter<String> emitter) throws Exception {
+                userReference.child(getVerifiedPhoneNumber()).child(CHAT_HEADS).child(recipientId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String chatHeadKey;
+                        if(dataSnapshot != null && dataSnapshot.getValue() != null) {
+                            chatHeadKey = dataSnapshot.getValue(String.class);
+                            emitter.onSuccess(chatHeadKey);
+                        } else {
+                            chatHeadKey = userReference.child(getVerifiedPhoneNumber()).child(CHAT_HEADS).child(recipientId).push().getKey();
+                            userReference.child(getVerifiedPhoneNumber()).child(CHAT_HEADS).child(recipientId).setValue(chatHeadKey);
+                            userReference.child(recipientId).child(CHAT_HEADS).child(getVerifiedPhoneNumber()).setValue(chatHeadKey);
+                            emitter.onSuccess(chatHeadKey);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        emitter.onError(databaseError.toException());
+                    }
+                });
             }
         });
+    }
+
+    public void sendMessage(String message, String chatHead, String receiverId) {
+        ChatMessage chatMessage = new ChatMessage(message, String.valueOf(System.currentTimeMillis()), getVerifiedPhoneNumber(), receiverId);
+        chatReference.child(chatHead).push().setValue(chatMessage);
     }
 }

@@ -178,7 +178,7 @@ public class ApplicationAccess {
     }
 
     public void sendMessage(String message, String chatHead, String receiverId) {
-        ChatMessage chatMessage = new ChatMessage(message, String.valueOf(System.currentTimeMillis()), getVerifiedPhoneNumber(), receiverId);
+        ChatMessage chatMessage = new ChatMessage(message, System.currentTimeMillis(), getVerifiedPhoneNumber(), receiverId);
         chatReference.child(chatHead).push().setValue(chatMessage);
     }
 }

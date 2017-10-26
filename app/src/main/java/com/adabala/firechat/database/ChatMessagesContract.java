@@ -12,7 +12,6 @@ public final class ChatMessagesContract {
 
     public static class MessageEntry implements BaseColumns {
         public static final String TABLE_NAME = "chatMessages";
-        public static final String COLUMN_NAME_MESSAGE_ID = "messageId";
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
         public static final String COLUMN_NAME_SENDER_ID = "senderId";
         public static final String COLUMN_NAME_RECEIVER_ID = "receiverId";

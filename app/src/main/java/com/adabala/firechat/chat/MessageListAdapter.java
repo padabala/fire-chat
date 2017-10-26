@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import timber.log.Timber;
+
 /**
  * Created by adabala on 26/10/2017.
  */
@@ -22,7 +24,13 @@ public class MessageListAdapter extends FirebaseListAdapter<ChatMessage> {
     }
 
     @Override
+    public int getCount() {
+        return super.getCount();
+    }
+
+    @Override
     protected void populateView(View view, ChatMessage chatMessage, int position) {
+        Timber.d("######populateView");
         TextView message = (TextView) view.findViewById(R.id.message);
         TextView senderName = (TextView) view.findViewById(R.id.sender_name);
         TextView sentTime = (TextView) view.findViewById(R.id.time);
@@ -30,7 +38,7 @@ public class MessageListAdapter extends FirebaseListAdapter<ChatMessage> {
         message.setText(chatMessage.getMessage());
         senderName.setText(chatMessage.getSenderId());
 
-        Date date = new Date(chatMessage.getTimeStampLong());
+        Date date = new Date(chatMessage.getTimeStamp());
         DateFormat formatter = new SimpleDateFormat("HH:mm");
 
         sentTime.setText(formatter.format(date));

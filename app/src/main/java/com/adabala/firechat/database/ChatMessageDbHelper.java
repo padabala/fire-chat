@@ -9,7 +9,6 @@ import com.adabala.firechat.chat.ChatMessage;
 import java.util.ArrayList;
 
 import static com.adabala.firechat.database.ChatMessagesContract.MessageEntry.COLUMN_NAME_MESSAGE;
-import static com.adabala.firechat.database.ChatMessagesContract.MessageEntry.COLUMN_NAME_MESSAGE_ID;
 import static com.adabala.firechat.database.ChatMessagesContract.MessageEntry.COLUMN_NAME_RECEIVER_ID;
 import static com.adabala.firechat.database.ChatMessagesContract.MessageEntry.COLUMN_NAME_SENDER_ID;
 import static com.adabala.firechat.database.ChatMessagesContract.MessageEntry.COLUMN_NAME_TIMESTAMP;
@@ -33,11 +32,10 @@ public class ChatMessageDbHelper {
     public void writeMessage(ChatMessage chatMessage) {
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COLUMN_NAME_MESSAGE_ID, chatMessage.getMessageId());
-        contentValues.put(COLUMN_NAME_TIMESTAMP, chatMessage.getMessageId());
-        contentValues.put(COLUMN_NAME_SENDER_ID, chatMessage.getMessageId());
-        contentValues.put(COLUMN_NAME_RECEIVER_ID, chatMessage.getMessageId());
-        contentValues.put(COLUMN_NAME_MESSAGE, chatMessage.getMessageId());
+        contentValues.put(COLUMN_NAME_TIMESTAMP, chatMessage.getTimeStamp());
+        contentValues.put(COLUMN_NAME_SENDER_ID, chatMessage.getSenderId());
+        contentValues.put(COLUMN_NAME_RECEIVER_ID, chatMessage.getReceiverId());
+        contentValues.put(COLUMN_NAME_MESSAGE, chatMessage.getMessage());
 
         writableDataBase.insert(TABLE_NAME, null ,contentValues);
     }
@@ -45,7 +43,6 @@ public class ChatMessageDbHelper {
     public ArrayList<ChatMessage> loadMessagesForUser(String senderId) {
 
         String[] projection = {
-                COLUMN_NAME_MESSAGE_ID,
                 COLUMN_NAME_TIMESTAMP,
                 COLUMN_NAME_SENDER_ID,
                 COLUMN_NAME_RECEIVER_ID,
@@ -73,9 +70,8 @@ public class ChatMessageDbHelper {
         while( cursor!= null && cursor.moveToNext() ) {
 
             ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setMessageId(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_MESSAGE_ID)));
             chatMessage.setMessage(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_MESSAGE)));
-            chatMessage.setTimeStamp(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_TIMESTAMP)));
+            chatMessage.setTimeStamp(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_NAME_TIMESTAMP)));
             chatMessage.setSenderId(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_SENDER_ID)));
             chatMessage.setReceiverId(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME_RECEIVER_ID)));
 

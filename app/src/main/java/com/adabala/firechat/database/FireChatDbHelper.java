@@ -16,11 +16,10 @@ public class FireChatDbHelper extends SQLiteOpenHelper{
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + ChatMessagesContract.MessageEntry.TABLE_NAME + " (" +
                     ChatMessagesContract.MessageEntry._ID + " INTEGER PRIMARY KEY," +
-                    ChatMessagesContract.MessageEntry.COLUMN_NAME_MESSAGE_ID + " TEXT," +
                     ChatMessagesContract.MessageEntry.COLUMN_NAME_SENDER_ID + " TEXT," +
                     ChatMessagesContract.MessageEntry.COLUMN_NAME_RECEIVER_ID + " TEXT," +
                     ChatMessagesContract.MessageEntry.COLUMN_NAME_MESSAGE + " TEXT," +
-                    ChatMessagesContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " TEXT)";
+                    ChatMessagesContract.MessageEntry.COLUMN_NAME_TIMESTAMP + " LONG)";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + ChatMessagesContract.MessageEntry.TABLE_NAME;

@@ -7,7 +7,7 @@ package com.adabala.firechat.chat;
 public class ChatMessage {
 
     private String message;
-    private String timeStamp;
+    private Long timeStamp;
     private String senderId;
     private String receiverId;
 
@@ -15,7 +15,7 @@ public class ChatMessage {
 
     }
 
-    public ChatMessage(String message, String timeStamp, String senderId, String receiverId) {
+    public ChatMessage(String message, Long timeStamp, String senderId, String receiverId) {
         this.message = message;
         this.timeStamp = timeStamp;
         this.senderId = senderId;
@@ -30,11 +30,11 @@ public class ChatMessage {
         this.message = message;
     }
 
-    public String getTimeStamp() {
+    public Long getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(Long timeStamp) {
         this.timeStamp = timeStamp;
     }
 
@@ -52,9 +52,5 @@ public class ChatMessage {
 
     public void setReceiverId(String receiverId) {
         this.receiverId = receiverId;
-    }
-
-    public long getTimeStampLong() {
-        return Long.parseLong(this.timeStamp);
     }
 }

@@ -88,7 +88,7 @@ public class ContactsSyncActivity extends AppCompatActivity implements LoaderMan
             while(data.moveToNext()) {
                 try {
                     String name = data.getString(data.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    String phoneNumber = data.getString(data.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    String phoneNumber = data.getString(data.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
                     if(name != null && phoneNumber != null && !name.isEmpty() && !phoneNumber.isEmpty()) {
                         Contact contact = new Contact(name, phoneNumber, false);
                         phoneBookContacts.add(contact);

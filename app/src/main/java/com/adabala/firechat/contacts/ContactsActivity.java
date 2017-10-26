@@ -68,6 +68,8 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
         if(contact.isFriend()) {
             Intent intent = new Intent(ContactsActivity.this, ChatActivity.class);
             intent.putExtra("recipientId", contact.getPhoneNumber());
+            intent.putExtra("recipientName", contact.getName());
+            intent.putExtra("chatHead", contact.getChatHead());
             startActivity(intent);
         } else {
             //TODO launch invitable intent

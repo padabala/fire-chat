@@ -1,30 +1,19 @@
 package com.adabala.firechat.chat;
 
-import android.database.DataSetObserver;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.adabala.firechat.R;
-import com.adabala.firechat.contacts.ContactsActivity;
 import com.adabala.firechat.database.ApplicationAccess;
 import com.adabala.firechat.databinding.ActivityChatBinding;
 import com.adabala.firechat.di.Injector;
-import com.firebase.ui.database.FirebaseListOptions;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.Query;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -39,11 +28,11 @@ public class ChatActivity extends AppCompatActivity{
 
     ActivityChatBinding mBinding;
     private String recipientId;
+    private String recipientName;
     private String chatHead;
 
     private MessageListAdapter messageListAdapter;
-
-    FirebaseRecyclerAdapter<ChatMessage, ViewHolder> adapter;
+    private LinearLayoutManager layoutManager;
 
     @Inject
     ApplicationAccess applicationAccess;
@@ -57,55 +46,63 @@ public class ChatActivity extends AppCompatActivity{
         mBinding.setHandlers(ChatActivity.this);
 
         recipientId = getIntent().getStringExtra("recipientId");
+        recipientName = getIntent().getStringExtra("recipientName");
+        chatHead = getIntent().getStringExtra("chatHead");
+
 
         if(recipientId != null && !recipientId.isEmpty()) {
+            if(chatHead != null) {
+                createAdapterAndSet();
+            }
             applicationAccess.getChatSessionForUser(recipientId).subscribe(new Consumer<String>() {
                 @Override
                 public void accept(String cHead) throws Exception {
                     chatHead = cHead;
-                    Query query = applicationAccess.chatReference.child(cHead);
-
-//                    FirebaseListOptions<ChatMessage> firebaseListOptions = new FirebaseListOptions.Builder<ChatMessage>()
-//                            .setLayout(R.layout.chat_message)
-//                            .setQuery(query, ChatMessage.class)
-//                            .build();
-
-                    FirebaseRecyclerOptions<ChatMessage> options = new FirebaseRecyclerOptions.Builder<ChatMessage>().setQuery(query, ChatMessage.class).build();
-
-                     adapter = new FirebaseRecyclerAdapter<ChatMessage, ViewHolder>(options) {
-                        @Override
-                        protected void onBindViewHolder(ViewHolder holder, int position, ChatMessage model) {
-                            ViewHolder viewHolder = (ViewHolder) holder;
-                            viewHolder.message.setText(model.getMessage());
-                            viewHolder.senderName.setText(model.getSenderId());
-                            Date date = new Date(model.getTimeStamp());
-                            DateFormat formatter = new SimpleDateFormat("HH:mm");
-                            viewHolder.sentTime.setText(formatter.format(date));
-                        }
-
-                        @Override
-                        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                            View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.chat_message, parent, false);
-                            return new ViewHolder(view);
-                        }
-                    };
-                    //messageListAdapter = new MessageListAdapter(firebaseListOptions);
-                    mBinding.chatList.setAdapter(adapter);
-
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(ChatActivity.this);
-                    layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-                    mBinding.chatList.setLayoutManager(layoutManager);
-
-                    adapter.startListening();
+                    createAdapterAndSet();
                 }
             });
         }
+        mBinding.setContactName(recipientName);
+    }
+
+    private void createAdapterAndSet() {
+
+        Query query = applicationAccess.chatReference.child(chatHead);
+
+        FirebaseRecyclerOptions<ChatMessage> options = new FirebaseRecyclerOptions.Builder<ChatMessage>().setQuery(query, ChatMessage.class).build();
+
+        messageListAdapter = new MessageListAdapter(options, ChatActivity.this);
+        mBinding.chatList.setAdapter(messageListAdapter);
+
+        layoutManager = new LinearLayoutManager(ChatActivity.this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setSmoothScrollbarEnabled(true);
+        layoutManager.setStackFromEnd(true);
+        mBinding.chatList.setLayoutManager(layoutManager);
+
+        messageListAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                int currentItemCount = messageListAdapter.getItemCount();
+                int lastVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
+
+                if (lastVisiblePosition == -1 ||
+                        (positionStart >= (currentItemCount - 1) &&
+                                lastVisiblePosition == (positionStart - 1))) {
+                    mBinding.chatList.scrollToPosition(positionStart);
+                }
+            }
+        });
+
+        messageListAdapter.startListening();
+
+        messageListAdapter.notifyDataSetChanged();
     }
 
     public void onSendClicked(View view) {
         String message = mBinding.message.getText().toString();
-        if(message != null && !message.isEmpty()) {
+        if(!message.isEmpty()) {
             applicationAccess.sendMessage(message, chatHead, recipientId);
             mBinding.message.setText("");
         }
@@ -118,7 +115,9 @@ public class ChatActivity extends AppCompatActivity{
 
     @Override
     protected void onStop() {
-        adapter.stopListening();
+        if(messageListAdapter != null) {
+            messageListAdapter.stopListening();
+        }
         super.onStop();
     }
 
@@ -135,19 +134,5 @@ public class ChatActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView message;
-        TextView senderName;
-        TextView sentTime;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            message = (TextView) itemView.findViewById(R.id.message);
-            senderName = (TextView) itemView.findViewById(R.id.sender_name);
-            sentTime = (TextView) itemView.findViewById(R.id.time);
-        }
     }
 }

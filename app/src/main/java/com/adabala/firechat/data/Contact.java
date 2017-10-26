@@ -9,6 +9,7 @@ public class Contact {
     String name;
     String phoneNumber;
     Boolean isFriend = false;
+    String chatHead;
 
     public Contact() {
 
@@ -18,6 +19,13 @@ public class Contact {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.isFriend = isFriend;
+    }
+
+    public Contact(String name, String phoneNumber, Boolean isFriend, String chatHead) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.isFriend = isFriend;
+        this.chatHead = chatHead;
     }
 
     public String getName() {
@@ -42,5 +50,13 @@ public class Contact {
 
     public void setFriend(Boolean friend) {
         isFriend = friend;
+    }
+
+    public String getChatHead() {
+        return chatHead;
+    }
+
+    public void setChatHead(String chatHead) {
+        this.chatHead = chatHead;
     }
 }

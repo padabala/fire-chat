@@ -126,6 +126,7 @@ public class ApplicationAccess {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot != null && dataSnapshot.getValue() != null) {
                         invitees.remove(contact);
+                        contact.setChatHead(dataSnapshot.child(CHAT_HEADS).child(getVerifiedPhoneNumber()).getValue(String.class));
                         contact.setFriend(true);
                         friends.add(contact);
                     } else {

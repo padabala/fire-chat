@@ -11,4 +11,9 @@
     <dimen name="contact_item_margin">10dp</dimen>
     <dimen name="contact_text_size">20sp</dimen>
     <dimen name="contact_number_size">16sp</dimen>
+
+    <dimen name="chat_message_margin">10dp</dimen>
+    <dimen name="chat_message_text_size">15sp</dimen>
+    <dimen name="chat_message_sender_size">10sp</dimen>
+    <dimen name="chat_message_time_size">10sp</dimen>
 </resources>

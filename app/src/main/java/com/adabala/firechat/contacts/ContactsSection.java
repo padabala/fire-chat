@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.adabala.firechat.R;
 import com.adabala.firechat.data.Contact;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +41,7 @@ public class ContactsSection extends StatelessSection {
     public void updateContacts(ArrayList<Contact> contacts) {
         this.contacts.clear();
         this.contacts.addAll(contacts);
+        sortContacts();
     }
 
     @Override

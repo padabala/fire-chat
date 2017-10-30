@@ -5,5 +5,5 @@ package com.adabala.firechat.utils;
  */
 
 public class FireChatNotification {
-    
+
 }

@@ -14,6 +14,7 @@ import com.adabala.firechat.database.ApplicationAccess;
 import com.adabala.firechat.di.Injector;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +42,11 @@ public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, Mes
     }
 
     @Override
+    public DatabaseReference getRef(int position) {
+        return super.getRef(position);
+    }
+
+    @Override
     protected void onBindViewHolder(ViewHolder holder, int position, ChatMessage model) {
         ViewHolder viewHolder = (ViewHolder) holder;
 
@@ -62,6 +68,7 @@ public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, Mes
             params.gravity = Gravity.LEFT;
             viewHolder.messageLayout.setLayoutParams(params);
             viewHolder.messageLayout.setBackgroundResource(R.drawable.received_mesg_bg);
+            getRef(position).child("status").setValue(0);
         }
     }
 

@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.adabala.firechat.R;
+import com.adabala.firechat.chat.MessageListener;
 import com.adabala.firechat.data.Contact;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -56,7 +57,7 @@ public class ContactsSection extends StatelessSection {
 
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+        final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
 
         itemViewHolder.name.setText(contacts.get(position).getName());
         itemViewHolder.number.setText(contacts.get(position).getPhoneNumber());
@@ -65,6 +66,17 @@ public class ContactsSection extends StatelessSection {
             @Override
             public void onClick(View v) {
                 contactSelectedListener.onContactsSelected(contacts.get(position));
+                contacts.get(position).resetUnreadMessageCount();
+                itemViewHolder.mesgCount.setText(String.valueOf(""));
+                itemViewHolder.mesgCountLayout.setVisibility(View.GONE);
+            }
+        });
+
+        contacts.get(position).setMessageListener(new MessageListener() {
+            @Override
+            public void onMessageReceived() {
+                itemViewHolder.mesgCount.setText(String.valueOf(contacts.get(position).getNumberOfUnreadMessages()));
+                itemViewHolder.mesgCountLayout.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -85,12 +97,16 @@ public class ContactsSection extends StatelessSection {
         private LinearLayout itemLayout;
         private TextView name;
         private TextView number;
+        private TextView mesgCount;
+        private LinearLayout mesgCountLayout;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             itemLayout = (LinearLayout) itemView.findViewById(R.id.item_layout);
             name = (TextView) itemView.findViewById(R.id.name);
             number = (TextView) itemView.findViewById(R.id.number);
+            mesgCount = (TextView) itemView.findViewById(R.id.mesg_count);
+            mesgCountLayout = (LinearLayout) itemView.findViewById(R.id.mesg_count_layout);
         }
     }
 

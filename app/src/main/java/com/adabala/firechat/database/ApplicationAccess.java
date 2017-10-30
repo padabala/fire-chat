@@ -8,6 +8,7 @@ import com.adabala.firechat.data.Contact;
 import com.adabala.firechat.interfaces.RegistrationCompletionListener;
 import com.adabala.firechat.utils.Constants;
 import com.github.pwittchen.prefser.library.rx2.Prefser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -129,6 +130,7 @@ public class ApplicationAccess {
                         contact.setChatHead(dataSnapshot.child(CHAT_HEADS).child(getVerifiedPhoneNumber()).getValue(String.class));
                         contact.setFriend(true);
                         friends.add(contact);
+                        chatReference.child(contact.getChatHead()).addChildEventListener(contact.getChildEventListener());
                     } else {
                         friends.remove(contact);
                         contact.setFriend(false);
@@ -144,7 +146,6 @@ public class ApplicationAccess {
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-
             });
         }
     }
@@ -179,7 +180,7 @@ public class ApplicationAccess {
     }
 
     public void sendMessage(String message, String chatHead, String receiverId) {
-        ChatMessage chatMessage = new ChatMessage(message, System.currentTimeMillis(), getVerifiedPhoneNumber(), receiverId);
+        ChatMessage chatMessage = new ChatMessage(message, System.currentTimeMillis(), getVerifiedPhoneNumber(), receiverId, 1);
         chatReference.child(chatHead).push().setValue(chatMessage);
     }
 }

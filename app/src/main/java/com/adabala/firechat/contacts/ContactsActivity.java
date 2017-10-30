@@ -72,7 +72,12 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
             intent.putExtra("chatHead", contact.getChatHead());
             startActivity(intent);
         } else {
-            //TODO launch invitable intent
+            Timber.d("onInviteClicked : " + contact.getPhoneNumber());
+            Intent inviteIntent = new Intent(android.content.Intent.ACTION_SEND);
+            inviteIntent.setType("text/plain");
+            inviteIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "FireChat");
+            inviteIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Get Firechat from app store link");
+            startActivity(Intent.createChooser(inviteIntent,  "Invite to FireChat"));
         }
     }
 

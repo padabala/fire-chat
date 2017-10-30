@@ -11,6 +11,9 @@
         <variable
             name="showNoNetworkView"
             type="boolean"/>
+        <variable
+            name="permissionsPermanentlyDenied"
+            type="boolean"/>
     </data>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -27,12 +30,28 @@
             android:gravity="center"
             android:textColor="@color/colorWhite"
             android:textStyle="bold"
-            android:visibility="@{showPermissionsView ? View.VISIBLE : View.GONE }"/>
+            android:visibility="@{showPermissionsView || permissionsPermanentlyDenied ? View.VISIBLE : View.GONE }"/>
+        <Button
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:background="@drawable/rounded_cornor_background"
+            android:text="@string/ok_text"
+            android:textColor="@color/colorWhite"
+            android:textAllCaps="true"
+            android:textSize="@dimen/button_text_size"
+            android:layout_margin="@dimen/button_margins"
+            android:padding="@dimen/button_text_padding"
+            android:onClick="@{handlers::onOKButtonClicked}"
+            android:visibility="@{showPermissionsView || permissionsPermanentlyDenied ? View.VISIBLE : View.GONE }"/>
         <TextView
             android:id="@+id/no_network_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/permission_req_text"
+            android:text="@string/no_network_text"
             android:layout_margin="@dimen/description_text_margin"
             android:textSize="@dimen/description_text_size"
             android:layout_centerInParent="true"

@@ -6,14 +6,30 @@
             name="handlers"
             type="com.adabala.firechat.contacts.ContactsActivity"/>
     </data>
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
-        <ListView
+        android:orientation="vertical"
+        android:background="@color/colorWhite">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="@string/contacts_title"
+                android:textColor="@color/colorWhite"/>
+        </LinearLayout>
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/contact_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </ListView>
-    </RelativeLayout>
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 </layout>

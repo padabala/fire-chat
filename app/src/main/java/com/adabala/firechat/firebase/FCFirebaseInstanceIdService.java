@@ -13,7 +13,7 @@ import timber.log.Timber;
  * Created by adabala on 17/10/2017.
  */
 
-public class GroupChatInstanceIdService extends FirebaseInstanceIdService {
+public class FCFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
     @Inject
     ApplicationAccess applicationAccess;
@@ -21,7 +21,7 @@ public class GroupChatInstanceIdService extends FirebaseInstanceIdService {
     @Override
     public void onCreate() {
         super.onCreate();
-        Injector.INSTANCE.getAppComponent().inject(GroupChatInstanceIdService.this);
+        Injector.INSTANCE.getAppComponent().inject(FCFirebaseInstanceIdService.this);
     }
 
     @Override

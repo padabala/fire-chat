@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.adabala.firechat">
 
+    <uses-permission
+        android:name="android.permission.READ_CONTACTS"/>
+
     <application
-        android:name="GroupChatApplication"
+        android:name=".FireChatApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,12 +22,12 @@
         </activity>
         <activity android:name="RegistrationActivity" />
 
-        <service android:name=".firebase.GroupChatMessagingService">
+        <service android:name=".firebase.FCFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".firebase.GroupChatInstanceIdService">
+        <service android:name=".firebase.FCFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -32,6 +35,8 @@
 
         <activity android:name=".AccessActivity" />
         <activity android:name=".contacts.ContactsActivity"></activity>
+        <activity android:name=".utils.ContactsSyncActivity"></activity>
+        <activity android:name=".chat.ChatActivity"></activity>
     </application>
 
 </manifest>

@@ -1,10 +1,12 @@
 package com.adabala.firechat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +21,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.concurrent.TimeUnit;
 
@@ -26,17 +31,27 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+/*
+* This activity is responsible for registering the user. It authenticates phone number
+* with firebase and on successful verification of phone number, it registers the user to firebase database.
+*
+*/
+
 public class RegistrationActivity extends AppCompatActivity implements RegistrationCompletionListener{
 
     ActivityRegistrationBinding mBinding;
 
     private String mVerificationId;
+    private String normalizedPhoneNumber;
 
     @Inject
     ApplicationAccess applicationAccess;
 
     @Inject
     FirebaseAuth firebaseAuth;
+
+    @Inject
+    PhoneNumberUtil phoneNumberUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +62,31 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         mBinding = DataBindingUtil.setContentView(RegistrationActivity.this, R.layout.activity_registration);
         mBinding.setHandlers(RegistrationActivity.this);
         mBinding.setShowPhoneNumberInput(true);
+
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        mBinding.countryCodePicker.setCountryForNameCode(telephonyManager.getSimCountryIso());
+        mBinding.countryCodePicker.registerCarrierNumberEditText(mBinding.numberInput);
     }
 
     public void onVerifyClicked(View view) {
         Timber.d("onVerifyClicked");
-        startPhoneNumberAutoVerification(mBinding.getPhoneNumber());
+        normalizedPhoneNumber = getNormalizedPhoneNumber(mBinding.getPhoneNumber(), mBinding.countryCodePicker.getSelectedCountryNameCode());
+        startPhoneNumberAutoVerification(normalizedPhoneNumber);
+    }
+
+    /*
+    * Normalizes the given phonenumber to international format.
+     */
+    private String getNormalizedPhoneNumber(String phoneNumber, String regionCode) {
+        try {
+            Phonenumber.PhoneNumber number = phoneNumberUtil.parse(phoneNumber, regionCode);
+            if (phoneNumberUtil.isValidNumberForRegion(number, regionCode)) {
+                return phoneNumberUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+            }
+        } catch (NumberParseException e) {
+            Timber.e("Failed getting normalized phone number", e);
+        }
+        return phoneNumber;
     }
 
     public void onRegisterClicked(View view) {
@@ -62,6 +97,9 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         }
     }
 
+    /*
+    * Singin with phonenumber authentication credentials provided during verification.
+     */
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         Timber.d("signInWithPhoneAuthCredential");
         firebaseAuth.signInWithCredential(credential)
@@ -70,7 +108,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Timber.d("signInWithPhoneAuthCredential Successful");
-                            applicationAccess.registerUser(mBinding.getPhoneNumber(), RegistrationActivity.this);
+                            applicationAccess.registerUser(normalizedPhoneNumber, RegistrationActivity.this);
                         } else {
                             Timber.d("%s",task.getResult());
                             Timber.d("signInWithPhoneAuthCredential Failed");
@@ -80,6 +118,10 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
                 });
     }
 
+    /*
+    * Phone number auto verification with firebase. validates user phonnumber by
+    * sending an verification code sms.
+     */
     private void startPhoneNumberAutoVerification(final String phoneNumber) {
 
         PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -110,7 +152,6 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
                 Timber.d("onCodeAutoRetrievalTimeOut %s", verificationId);
             }
         };
-
         PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, mCallbacks);
     }
 

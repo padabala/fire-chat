@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "26.0.0"
     defaultConfig {
         applicationId "com.adabala.firechat"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -28,18 +28,22 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.0.0'
     compile 'com.jakewharton.timber:timber:4.5.1'
     compile 'com.google.dagger:dagger:2.9'
     compile 'com.google.firebase:firebase-auth:11.4.2'
     compile 'com.google.firebase:firebase-messaging:11.4.2'
     compile 'com.google.firebase:firebase-database:11.4.2'
+    compile 'com.firebaseui:firebase-ui-database:3.1.0'
     compile 'com.github.pwittchen:prefser-rx2:2.1.0'
     compile 'com.github.pwittchen:reactivenetwork-rx2:0.11.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'pub.devrel:easypermissions:1.0.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
+    compile 'io.github.luizgrp.sectionedrecyclerviewadapter:sectionedrecyclerviewadapter:1.1.3'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
+    compile 'com.hbb20:ccp:2.0.7'
 }
 
 apply plugin: 'com.google.gms.google-services'

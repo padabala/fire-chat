@@ -20,6 +20,8 @@ import timber.log.Timber;
 
 /**
  * Created by adabala on 22/10/2017.
+ * This Activity is extendable and it performs reading contacts from phonebook
+ * using cursor loader and calls sync contacts from firebase database
  */
 
 public class ContactsSyncActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -35,6 +37,9 @@ public class ContactsSyncActivity extends AppCompatActivity implements LoaderMan
         phoneBookContacts = new ArrayList<>();
     }
 
+    /*
+    * Initialize cursor loader for reading contacts.
+     */
     public void initContactsCursorLoader() {
         Timber.d("initContactsCursorLoader ");
         getLoaderManager().initLoader(0, null ,this);

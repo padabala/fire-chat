@@ -45,6 +45,7 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
         mBinding = DataBindingUtil.setContentView(ContactsActivity.this, R.layout.activity_contacts);
         mBinding.setHandlers(ContactsActivity.this);
 
+        //Create data holders for each section to be displayed in the contact list view.
         friendsSection = new ContactsSection(R.layout.section_header, R.layout.contact_item, new ArrayList<Contact>()
                 , getString(R.string.friends_header_text), ContactsActivity.this);
         inviteSection = new ContactsSection(R.layout.section_header, R.layout.contact_item, new ArrayList<Contact>()
@@ -60,6 +61,7 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.contactListView.setLayoutManager(layoutManager);
 
+        //Initialize cursor loader to start read contacts from phonebook and start syncing it with firebase database.
         initContactsCursorLoader();
     }
 
@@ -72,6 +74,7 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
             intent.putExtra("chatHead", contact.getChatHead());
             startActivity(intent);
         } else {
+            //Show application chooser intent dialog for the invite action.
             Timber.d("onInviteClicked : " + contact.getPhoneNumber());
             Intent inviteIntent = new Intent(android.content.Intent.ACTION_SEND);
             inviteIntent.setType("text/plain");
@@ -85,6 +88,7 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
     protected void onResume() {
         super.onResume();
 
+        //Subcribe to synced contacts subject. And updates data models on update received.
         applicationAccess.contactsSubject.subscribe(new Consumer<HashMap<String, ArrayList<Contact>>>() {
             @Override
             public void accept(HashMap<String, ArrayList<Contact>> hashMap) throws Exception {
@@ -93,5 +97,18 @@ public class ContactsActivity extends ContactsSyncActivity implements ContactSel
                 sectionedRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
+
+        applicationAccess.showNotification = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        applicationAccess.showNotification = true;
+        super.onDestroy();
     }
 }

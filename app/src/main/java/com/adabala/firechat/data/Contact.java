@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseError;
 
 /**
  * Created by adabala on 22/10/2017.
+ * Contacts data object to hold various data related to contact and event listeners for incoming messages.
  */
 
 public class Contact {

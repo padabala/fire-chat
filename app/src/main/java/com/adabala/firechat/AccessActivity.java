@@ -19,6 +19,11 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
+/*
+* This Activity checks the required permission needed
+* for the app before user proceeds to contacts list.
+*/
+
 public class AccessActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     ActivityAccessBinding mBinding;

@@ -11,6 +11,7 @@ import timber.log.Timber;
 
 /**
  * Created by adabala on 17/10/2017.
+ * Application module for Fire Chat application.
  */
 
 public class FireChatApplication extends Application {

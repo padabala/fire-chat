@@ -26,6 +26,7 @@ import timber.log.Timber;
 
 /**
  * Created by adabala on 26/10/2017.
+ * Adapter for displaying chat messages in real time when.
  */
 
 public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, MessageListAdapter.ViewHolder> {
@@ -68,6 +69,7 @@ public class MessageListAdapter extends FirebaseRecyclerAdapter<ChatMessage, Mes
             params.gravity = Gravity.LEFT;
             viewHolder.messageLayout.setLayoutParams(params);
             viewHolder.messageLayout.setBackgroundResource(R.drawable.received_mesg_bg);
+            //Set message status value in the firebase database to message read.
             getRef(position).child("status").setValue(0);
         }
     }

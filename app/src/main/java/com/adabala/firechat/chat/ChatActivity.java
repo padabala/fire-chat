@@ -22,6 +22,8 @@ import timber.log.Timber;
 
 /**
  * Created by adabala on 22/10/2017.
+ * This Activity will be launched when user clicks on contact.
+ * This is basic chat UI component and shows sent and eceived messages during chat.
  */
 
 public class ChatActivity extends AppCompatActivity{
@@ -42,6 +44,7 @@ public class ChatActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
 
         Injector.INSTANCE.getAppComponent().inject(ChatActivity.this);
+
         mBinding = DataBindingUtil.setContentView(ChatActivity.this, R.layout.activity_chat);
         mBinding.setHandlers(ChatActivity.this);
 
@@ -50,6 +53,7 @@ public class ChatActivity extends AppCompatActivity{
         chatHead = getIntent().getStringExtra("chatHead");
 
 
+        //Check for chatHead existence and request for new one.
         if(recipientId != null && !recipientId.isEmpty()) {
             if(chatHead != null) {
                 createAdapterAndSet();
@@ -65,6 +69,10 @@ public class ChatActivity extends AppCompatActivity{
         mBinding.setContactName(recipientName);
     }
 
+    /*
+    * Creates message list adapter and sets the required parameters
+    * used by the adapter to listen to firebase database for incoming messages
+     */
     private void createAdapterAndSet() {
 
         Query query = applicationAccess.chatReference.child(chatHead);
@@ -95,11 +103,15 @@ public class ChatActivity extends AppCompatActivity{
             }
         });
 
+        //Listening to messages at the specified database reference
         messageListAdapter.startListening();
 
         messageListAdapter.notifyDataSetChanged();
     }
 
+    /*
+    * Handler for on send message button clicked event
+     */
     public void onSendClicked(View view) {
         String message = mBinding.message.getText().toString();
         if(!message.isEmpty()) {

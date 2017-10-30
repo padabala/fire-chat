@@ -2,6 +2,7 @@ package com.adabala.firechat.chat;
 
 /**
  * Created by adabala on 17/10/2017.
+ * Class to hold the write and readable chat message object of firebase database.
  */
 
 public class ChatMessage {

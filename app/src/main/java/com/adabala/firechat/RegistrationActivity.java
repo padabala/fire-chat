@@ -31,6 +31,12 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+/*
+* This activity is responsible for registering the user. It authenticates phone number
+* with firebase and on successful verification of phone number, it registers the user to firebase database.
+*
+*/
+
 public class RegistrationActivity extends AppCompatActivity implements RegistrationCompletionListener{
 
     ActivityRegistrationBinding mBinding;
@@ -66,6 +72,9 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         startPhoneNumberAutoVerification(getNormalizedPhoneNumber(mBinding.getPhoneNumber(), mBinding.countryCodePicker.getSelectedCountryNameCode()));
     }
 
+    /*
+    * Normalizes the given phonenumber to international format.
+     */
     private String getNormalizedPhoneNumber(String phoneNumber, String regionCode) {
         try {
             Phonenumber.PhoneNumber number = phoneNumberUtil.parse(phoneNumber, regionCode);
@@ -86,6 +95,9 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         }
     }
 
+    /*
+    * Singin with phonenumber authentication credentials provided during verification.
+     */
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         Timber.d("signInWithPhoneAuthCredential");
         firebaseAuth.signInWithCredential(credential)
@@ -104,6 +116,10 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
                 });
     }
 
+    /*
+    * Phone number auto verification with firebase. validates user phonnumber by
+    * sending an verification code sms.
+     */
     private void startPhoneNumberAutoVerification(final String phoneNumber) {
 
         PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {

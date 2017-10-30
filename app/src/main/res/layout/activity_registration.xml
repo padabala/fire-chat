@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <import type="android.view.View"/>
         <variable
@@ -26,6 +27,14 @@
             android:orientation="vertical"
             android:layout_centerInParent="true"
             android:visibility="@{ showPhoneNumberInput ? View.VISIBLE : View.GONE }">
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/country_code_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/colorWhite"
+                app:ccp_countryPreference="FI">
+            </com.hbb20.CountryCodePicker>
             <EditText
                 android:id="@+id/number_input"
                 android:layout_width="match_parent"

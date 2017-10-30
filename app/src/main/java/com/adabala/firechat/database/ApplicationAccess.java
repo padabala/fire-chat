@@ -8,7 +8,6 @@ import com.adabala.firechat.data.Contact;
 import com.adabala.firechat.interfaces.RegistrationCompletionListener;
 import com.adabala.firechat.utils.Constants;
 import com.github.pwittchen.prefser.library.rx2.Prefser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -119,20 +118,23 @@ public class ApplicationAccess {
         });
     }
 
+    /*
+    * It syncs phonebook contacts with accounts on firebase database to get friends list
+    */
     public void syncContacts(ArrayList<Contact> phoneBookContacts) {
 
         for(final Contact contact : phoneBookContacts) {
-            userReference.child(contact.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
+            userReference.child(contact.getPhoneNumber()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot != null && dataSnapshot.getValue() != null) {
-                        invitees.remove(contact);
                         contact.setChatHead(dataSnapshot.child(CHAT_HEADS).child(getVerifiedPhoneNumber()).getValue(String.class));
                         contact.setFriend(true);
                         friends.add(contact);
-                        chatReference.child(contact.getChatHead()).addChildEventListener(contact.getChildEventListener());
+                        if(contact.getChatHead() != null) {
+                            chatReference.child(contact.getChatHead()).addChildEventListener(contact.getChildEventListener());
+                        }
                     } else {
-                        friends.remove(contact);
                         contact.setFriend(false);
                         invitees.add(contact);
                     }
@@ -148,6 +150,8 @@ public class ApplicationAccess {
                 }
             });
         }
+        friends.clear();
+        invitees.clear();
     }
 
     public Single<String> getChatSessionForUser(final String recipientId) {

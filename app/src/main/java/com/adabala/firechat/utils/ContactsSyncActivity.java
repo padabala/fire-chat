@@ -84,6 +84,7 @@ public class ContactsSyncActivity extends AppCompatActivity implements LoaderMan
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Timber.d("onLoadFinished");
+        phoneBookContacts.clear();
         if(data != null && data.getCount() > 0) {
             while(data.moveToNext()) {
                 try {

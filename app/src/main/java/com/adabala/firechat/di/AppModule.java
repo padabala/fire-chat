@@ -12,6 +12,7 @@ import com.adabala.firechat.utils.Constants;
 import com.github.pwittchen.prefser.library.rx2.Prefser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -84,5 +85,11 @@ public class AppModule {
     @Singleton
     ChatMessageDbHelper providesChatMessageDbHelper(FireChatDbHelper fireChatDbHelper) {
         return new ChatMessageDbHelper(fireChatDbHelper);
+    }
+
+    @Provides
+    @Singleton
+    PhoneNumberUtil providesPhoneNumberUtil(Context context) {
+        return PhoneNumberUtil.getInstance();
     }
 }

@@ -1,10 +1,12 @@
 package com.adabala.firechat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -19,6 +21,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +43,9 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     @Inject
     FirebaseAuth firebaseAuth;
 
+    @Inject
+    PhoneNumberUtil phoneNumberUtil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,11 +55,27 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
         mBinding = DataBindingUtil.setContentView(RegistrationActivity.this, R.layout.activity_registration);
         mBinding.setHandlers(RegistrationActivity.this);
         mBinding.setShowPhoneNumberInput(true);
+
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        mBinding.countryCodePicker.setCountryForNameCode(telephonyManager.getSimCountryIso());
+        mBinding.countryCodePicker.registerCarrierNumberEditText(mBinding.numberInput);
     }
 
     public void onVerifyClicked(View view) {
         Timber.d("onVerifyClicked");
-        startPhoneNumberAutoVerification(mBinding.getPhoneNumber());
+        startPhoneNumberAutoVerification(getNormalizedPhoneNumber(mBinding.getPhoneNumber(), mBinding.countryCodePicker.getSelectedCountryNameCode()));
+    }
+
+    private String getNormalizedPhoneNumber(String phoneNumber, String regionCode) {
+        try {
+            Phonenumber.PhoneNumber number = phoneNumberUtil.parse(phoneNumber, regionCode);
+            if (phoneNumberUtil.isValidNumberForRegion(number, regionCode)) {
+                return phoneNumberUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+            }
+        } catch (NumberParseException e) {
+            Timber.e("Failed getting normalized phone number", e);
+        }
+        return phoneNumber;
     }
 
     public void onRegisterClicked(View view) {

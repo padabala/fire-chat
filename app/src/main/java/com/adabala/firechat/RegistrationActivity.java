@@ -42,6 +42,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     ActivityRegistrationBinding mBinding;
 
     private String mVerificationId;
+    private String normalizedPhoneNumber;
 
     @Inject
     ApplicationAccess applicationAccess;
@@ -69,7 +70,8 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
 
     public void onVerifyClicked(View view) {
         Timber.d("onVerifyClicked");
-        startPhoneNumberAutoVerification(getNormalizedPhoneNumber(mBinding.getPhoneNumber(), mBinding.countryCodePicker.getSelectedCountryNameCode()));
+        normalizedPhoneNumber = getNormalizedPhoneNumber(mBinding.getPhoneNumber(), mBinding.countryCodePicker.getSelectedCountryNameCode());
+        startPhoneNumberAutoVerification(normalizedPhoneNumber);
     }
 
     /*
@@ -106,7 +108,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Timber.d("signInWithPhoneAuthCredential Successful");
-                            applicationAccess.registerUser(mBinding.getPhoneNumber(), RegistrationActivity.this);
+                            applicationAccess.registerUser(normalizedPhoneNumber, RegistrationActivity.this);
                         } else {
                             Timber.d("%s",task.getResult());
                             Timber.d("signInWithPhoneAuthCredential Failed");
@@ -150,7 +152,6 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
                 Timber.d("onCodeAutoRetrievalTimeOut %s", verificationId);
             }
         };
-
         PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNumber, 60, TimeUnit.SECONDS, this, mCallbacks);
     }
 

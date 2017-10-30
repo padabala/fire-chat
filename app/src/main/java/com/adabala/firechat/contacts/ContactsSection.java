@@ -20,6 +20,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 /**
  * Created by adabala on 22/10/2017.
+ * This section holds the contact items of specific category(friends/invitees).
  */
 
 public class ContactsSection extends StatelessSection {

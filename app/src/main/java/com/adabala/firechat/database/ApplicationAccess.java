@@ -145,7 +145,7 @@ public class ApplicationAccess {
     public void syncContacts(ArrayList<Contact> phoneBookContacts) {
 
         for(final Contact contact : phoneBookContacts) {
-            userReference.child(contact.getPhoneNumber()).addListenerForSingleValueEvent(new ValueEventListener() {
+            userReference.child(contact.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(dataSnapshot != null && dataSnapshot.getValue() != null) {
@@ -155,11 +155,13 @@ public class ApplicationAccess {
                         if(contact.getChatHead() != null) {
                             chatReference.child(contact.getChatHead()).addChildEventListener(contact.getChildEventListener());
                         } else {
-                            userReference.child(getVerifiedPhoneNumber()).child(CHAT_HEADS).child(contact.getPhoneNumber()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            userReference.child(getVerifiedPhoneNumber()).child(CHAT_HEADS).child(contact.getPhoneNumber()).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    contact.setChatHead(dataSnapshot.getValue(String.class));
-                                    chatReference.child(contact.getChatHead()).addChildEventListener(contact.getChildEventListener());
+                                    if(dataSnapshot != null && dataSnapshot.getValue() != null) {
+                                        contact.setChatHead(dataSnapshot.getValue(String.class));
+                                        chatReference.child(contact.getChatHead()).addChildEventListener(contact.getChildEventListener());
+                                    }
                                 }
 
                                 @Override
